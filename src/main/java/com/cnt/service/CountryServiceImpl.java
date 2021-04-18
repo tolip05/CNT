@@ -72,8 +72,7 @@ public class CountryServiceImpl implements CountryService {
         //Set number of tour in result model
         resultViewModel.setArounds(numberOfTour);
         //Calculated remain money
-        BigDecimal remainMoney = BigDecimal.valueOf(requestServiceModel
-                .getTotalBudget().intValue() % priceOfTour.intValue());
+        BigDecimal remainMoney = requestServiceModel.getTotalBudget().subtract((priceOfTour.multiply(BigDecimal.valueOf(numberOfTour))));
         //Result model set remain money
         resultViewModel.setLeftover(remainMoney);
         //Convert money for country to euro, because euro is base currency to converting
