@@ -100,6 +100,22 @@ public class AllApplicatinTests {
 
     }
     @Test
+    public void checkResult_whenNotNeighbors(){
+        this.country.setName(BULGARIA);
+        this.countryService.createCountry(country);
+        RequestServiceModel requestServiceModel = new RequestServiceModel();
+        requestServiceModel.setStartingCountry(BULGARIA);
+        requestServiceModel.setBudgetPerCountry(BigDecimal.valueOf(100));
+        requestServiceModel.setCurrency(EUR);
+        requestServiceModel.setTotalBudget(BigDecimal.valueOf(1200));
+        ResultViewModel resultViewModel =
+                this.countryService.calculate(requestServiceModel);
+        Assert.assertEquals(new BigDecimal("1200"),resultViewModel.getLeftover());
+        Assert.assertEquals(0,resultViewModel.getForeighnCurrency().size());
+        Assert.assertEquals(0,resultViewModel.getNeighbors().size());
+        Assert.assertEquals(0,(int)resultViewModel.getArounds());
+    }
+    @Test
     public void checkCorrectProcessing_calculateMethod() {
         this.bulgariaLev.setName(BUL);
         this.bulgariaLev.setExchangeRate(BigDecimal.valueOf(1.9555));

@@ -43,6 +43,10 @@ public class CountryServiceImpl implements CountryService {
                 this.modelMapper.map(country,CountryServiceModel.class);
         //Get number of neighbors from starting country
         int countOfNeighbors = countryServiceModel.getNeighbors().size();
+        if (countOfNeighbors == 0){
+            this.setDeafultValues(resultViewModel,requestServiceModel.getTotalBudget());
+            return resultViewModel;
+        }
         //Check for enough money for minimum one tour
         boolean checkForCountTour = this.checkTourIsValid(countOfNeighbors,
                 requestServiceModel.getBudgetPerCountry()
@@ -57,8 +61,7 @@ public class CountryServiceImpl implements CountryService {
         //If has not enough money for minimum one tour,in result model set zero tours
         // and total budget for unspent funds
         if (!checkForCountTour){
-            resultViewModel.setArounds(0);
-            resultViewModel.setLeftover(requestServiceModel.getTotalBudget());
+            this.setDeafultValues(resultViewModel,requestServiceModel.getTotalBudget());
             return resultViewModel;
         }
         //Calculated price for one tour
@@ -90,6 +93,11 @@ public class CountryServiceImpl implements CountryService {
             }
         }
         return resultViewModel;
+    }
+
+    private void setDeafultValues(ResultViewModel resultViewModel, BigDecimal totalBudget) {
+        resultViewModel.setLeftover(totalBudget);
+        resultViewModel.setArounds(0);
     }
 
     @Override
