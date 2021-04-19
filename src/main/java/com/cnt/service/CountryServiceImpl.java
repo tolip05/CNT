@@ -16,7 +16,6 @@ import java.math.MathContext;
 @Service
 public class CountryServiceImpl implements CountryService {
     private static final String WRONG_MESSAGE = "Country name is not correct!!!";
-private static final String EUR = "EUR";
     private final CountryRepository countryRepository;
     private final ModelMapper modelMapper;
     private final CurrencyService currencyService;
@@ -79,7 +78,8 @@ private static final String EUR = "EUR";
         //Convert money for country to euro, because euro is base currency to converting
         //all currencies have a exchange rate to euro. We can use too USD, then all currencies must have
         //exchange rate to USD
-        BigDecimal amountOfMoneyPerCountryToEuro = this.convertMoneyToEuro(requestServiceModel.getBudgetPerCountry(),numberOfTour);
+        BigDecimal amountOfMoneyPerCountryToEuro = this.convertMoneyToEuro(requestServiceModel.getBudgetPerCountry(),numberOfTour
+                ,requestServiceModel.getCurrency());
         //Iteration about neighbours and if neighbor have local currency
         //then we calculated price per country to local currency and write result in hash map in result model
         for (CountryServiceModel neighbor : countryServiceModel.getNeighbors()) {
@@ -109,11 +109,11 @@ private static final String EUR = "EUR";
         return true;
     }
 
-    private BigDecimal convertMoneyToEuro( BigDecimal pricePerCountry,int numberOfTour) {
+    private BigDecimal convertMoneyToEuro( BigDecimal pricePerCountry,int numberOfTour, String currencyName) {
         BigDecimal moneyPerCountry = pricePerCountry
                 .multiply(BigDecimal.valueOf(numberOfTour));
         CurrencyServiceModel currencyServiceModel = this.currencyService
-                .findByName(EUR);
+                .findByName(currencyName);
         return moneyPerCountry.divide(currencyServiceModel.getExchangeRate());
     }
 
