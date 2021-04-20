@@ -30,6 +30,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public ResultViewModel calculate(RequestServiceModel requestServiceModel) {
+
         ResultViewModel resultViewModel = new ResultViewModel();
         //Get country from database if it exist
         Country country = this.countryRepository
@@ -41,6 +42,11 @@ public class CountryServiceImpl implements CountryService {
         //Mapping entity in to service model
         CountryServiceModel countryServiceModel =
                 this.modelMapper.map(country,CountryServiceModel.class);
+        //Check for correct value of budget for country
+        if (requestServiceModel.getBudgetPerCountry().compareTo(BigDecimal.valueOf(0)) <= 0){
+            this.setDeafultValues(resultViewModel,requestServiceModel.getTotalBudget());
+            return resultViewModel;
+        }
         //Get number of neighbors from starting country
         int countOfNeighbors = countryServiceModel.getNeighbors().size();
         if (countOfNeighbors == 0){
